@@ -1,0 +1,112 @@
+[
+  {
+    "id": "disc-001",
+    "summonerName": "BestLuluEUW",
+    "tagLine": "EUW",
+    "avatarUrl": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/profileicon/4103.png",
+    "splashUrl": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Lulu_0.jpg",
+    "splashFocus": "70% center",
+    "rank": { "tier": "Oro", "division": "I", "lp": 88 },
+    "winRate": 61,
+    "gamesAnalyzed": 20,
+    "mainRole": "Support",
+    "playStyles": ["Support", "Pasivo"],
+    "topChampions": [
+      { "id": "Lulu",   "name": "Lulu",   "iconUrl": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Lulu.png",   "mastery": "M7" },
+      { "id": "Janna",  "name": "Janna",  "iconUrl": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Janna.png",  "mastery": "M6" },
+      { "id": "Soraka", "name": "Soraka", "iconUrl": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Soraka.png", "mastery": "M5" }
+    ],
+    "wins": 122, "losses": 78, "region": "EUW",
+    "lookingForDuo": true,
+    "createdAt": "2024-03-10T09:00:00.000Z",
+    "updatedAt": "2025-02-23T14:20:00.000Z"
+  },
+  {
+    "id": "disc-002",
+    "summonerName": "ShadowClaw-",
+    "tagLine": "LAN",
+    "avatarUrl": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/profileicon/4567.png",
+    "splashUrl": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Warwick_0.jpg",
+    "splashFocus": "60% center",
+    "rank": { "tier": "Bronce", "division": "IV", "lp": 42 },
+    "winRate": 47,
+    "gamesAnalyzed": 20,
+    "mainRole": "Jungle",
+    "playStyles": ["Agresivo", "Farmero"],
+    "topChampions": [
+      { "id": "Warwick", "name": "Warwick", "iconUrl": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Warwick.png", "mastery": "M7" },
+      { "id": "Vi",      "name": "Vi",      "iconUrl": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Vi.png",      "mastery": "M6" },
+      { "id": "Amumu",   "name": "Amumu",   "iconUrl": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Amumu.png",   "mastery": "M5" }
+    ],
+    "wins": 94, "losses": 106, "region": "LAN",
+    "lookingForDuo": true,
+    "createdAt": "2024-01-15T10:30:00.000Z",
+    "updatedAt": "2025-02-20T18:45:00.000Z"
+  },
+  {
+    "id": "disc-003",
+    "summonerName": "VoidReaper99",
+    "tagLine": "NA1",
+    "avatarUrl": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/profileicon/5672.png",
+    "splashUrl": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Kassadin_0.jpg",
+    "splashFocus": "65% center",
+    "rank": { "tier": "Platino", "division": "II", "lp": 55 },
+    "winRate": 54,
+    "gamesAnalyzed": 20,
+    "mainRole": "Mid",
+    "playStyles": ["Agresivo", "Roamer"],
+    "topChampions": [
+      { "id": "Kassadin", "name": "Kassadin", "iconUrl": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Kassadin.png", "mastery": "M7" },
+      { "id": "Zed",      "name": "Zed",      "iconUrl": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Zed.png",      "mastery": "M6" },
+      { "id": "Yasuo",    "name": "Yasuo",    "iconUrl": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Yasuo.png",    "mastery": "M5" }
+    ],
+    "wins": 108, "losses": 92, "region": "NA",
+    "lookingForDuo": true,
+    "createdAt": "2024-06-01T12:00:00.000Z",
+    "updatedAt": "2025-02-21T20:10:00.000Z"
+  },
+  {
+    "id": "disc-004",
+    "summonerName": "IronADCCarry",
+    "tagLine": "LAS",
+    "avatarUrl": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/profileicon/3902.png",
+    "splashUrl": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Jinx_0.jpg",
+    "splashFocus": "55% center",
+    "rank": { "tier": "Plata", "division": "III", "lp": 20 },
+    "winRate": 49,
+    "gamesAnalyzed": 20,
+    "mainRole": "ADC",
+    "playStyles": ["Farmero", "Agresivo"],
+    "topChampions": [
+      { "id": "Jinx",        "name": "Jinx",        "iconUrl": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Jinx.png",        "mastery": "M7" },
+      { "id": "Caitlyn",     "name": "Caitlyn",     "iconUrl": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Caitlyn.png",     "mastery": "M6" },
+      { "id": "MissFortune", "name": "Miss Fortune","iconUrl": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/MissFortune.png", "mastery": "M5" }
+    ],
+    "wins": 98, "losses": 102, "region": "LAS",
+    "lookingForDuo": true,
+    "createdAt": "2024-09-20T08:00:00.000Z",
+    "updatedAt": "2025-02-22T11:30:00.000Z"
+  },
+  {
+    "id": "disc-005",
+    "summonerName": "TopOrFeed",
+    "tagLine": "EUW",
+    "avatarUrl": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/profileicon/6.png",
+    "splashUrl": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Darius_0.jpg",
+    "splashFocus": "60% center",
+    "rank": { "tier": "Esmeralda", "division": "IV", "lp": 3 },
+    "winRate": 52,
+    "gamesAnalyzed": 20,
+    "mainRole": "Top",
+    "playStyles": ["Agresivo", "Tryhard"],
+    "topChampions": [
+      { "id": "Darius", "name": "Darius", "iconUrl": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Darius.png", "mastery": "M7" },
+      { "id": "Garen",  "name": "Garen",  "iconUrl": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Garen.png",  "mastery": "M6" },
+      { "id": "Fiora",  "name": "Fiora",  "iconUrl": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Fiora.png",  "mastery": "M5" }
+    ],
+    "wins": 104, "losses": 96, "region": "EUW",
+    "lookingForDuo": true,
+    "createdAt": "2023-12-01T07:00:00.000Z",
+    "updatedAt": "2025-02-24T09:00:00.000Z"
+  }
+]

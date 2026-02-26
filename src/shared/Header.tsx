@@ -1,6 +1,21 @@
+import { useLocation } from "react-router-dom";
 import logo from "../assets/DuoNexus.png";
 
 export function Header() {
+  const { pathname } = useLocation();
+
+  const navItems = [
+    { label: "Inicio",    href: "/"         },
+    { label: "Descubrir", href: "/discover" },
+    { label: "Perfil",    href: "/profile"  },
+    { label: "Mensajes",  href: "/mensajes" },
+  ];
+
+  function isActive(href: string) {
+    if (href === "/") return pathname === "/" || pathname === "/home";
+    return pathname.startsWith(href);
+  }
+
   return (
     <header className="sticky top-0 z-50 bg-zinc-950 border-b border-yellow-600/30">
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
@@ -15,17 +30,12 @@ export function Header() {
 
         {/* Nav */}
         <nav className="hidden md:flex items-center gap-1">
-          {[
-            { label: "Inicio", href: "/", active: true },
-            { label: "Descubrir", href: "/descubrir", active: false },
-            { label: "Perfil", href: "/perfil", active: false },
-            { label: "Mensajes", href: "/mensajes", active: false },
-          ].map((item) => (
+          {navItems.map((item) => (
             <a
               key={item.label}
               href={item.href}
               className={`px-4 py-2 text-sm font-semibold tracking-wide transition-colors border-b-2 ${
-                item.active
+                isActive(item.href)
                   ? "text-yellow-500 border-yellow-500"
                   : "text-zinc-400 hover:text-white border-transparent hover:border-zinc-600"
               }`}

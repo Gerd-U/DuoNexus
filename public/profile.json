@@ -1,0 +1,42 @@
+[
+  {
+    "id": "user-001",
+    "summonerName": "ShadowClaw-",
+    "tagLine": "LAN",
+    "avatarUrl": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/profileicon/4567.png",
+    "rank": { "tier": "Bronce", "division": "IV", "lp": 42 },
+    "winRate": 47,
+    "gamesAnalyzed": 20,
+    "playStyles": ["Agresivo", "Farmero"],
+    "topChampions": [
+      { "id": "Warwick", "name": "Warwick", "iconUrl": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Warwick.png", "mastery": "M7" },
+      { "id": "Vi",      "name": "Vi",      "iconUrl": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Vi.png",      "mastery": "M6" },
+      { "id": "Amumu",   "name": "Amumu",   "iconUrl": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Amumu.png",   "mastery": "M5" }
+    ],
+    "wins": 94,
+    "losses": 106,
+    "region": "LAN",
+    "createdAt": "2024-01-15T10:30:00.000Z",
+    "updatedAt": "2025-02-20T18:45:00.000Z"
+  },
+  {
+    "id": "user-002",
+    "summonerName": "XxYoneMasterxX",
+    "tagLine": "LAS",
+    "avatarUrl": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/profileicon/5672.png",
+    "rank": { "tier": "Platino", "division": "IV", "lp": 75 },
+    "winRate": 58,
+    "gamesAnalyzed": 20,
+    "playStyles": ["Agresivo", "Roamer", "Tryhard"],
+    "topChampions": [
+      { "id": "Yone",  "name": "Yone",  "iconUrl": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Yone.png",  "mastery": "M7" },
+      { "id": "Yasuo", "name": "Yasuo", "iconUrl": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Yasuo.png", "mastery": "M6" },
+      { "id": "Zed",   "name": "Zed",   "iconUrl": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Zed.png",   "mastery": "M5" }
+    ],
+    "wins": 116,
+    "losses": 84,
+    "region": "LAS",
+    "createdAt": "2023-11-01T08:00:00.000Z",
+    "updatedAt": "2025-02-24T21:10:00.000Z"
+  }
+]
