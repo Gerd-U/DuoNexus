@@ -5,8 +5,7 @@ import { Home } from './features/home/Home'
 import NotFound from './shared/NotFound'
 import Profile from './features/profile/Profile'
 import Discover from './features/discover/Discover'
-
-
+import { Messages } from './features/messages/Messages'
 
 function App() {
   return (
@@ -20,6 +19,7 @@ function App() {
           <Route path="/profile" element={<Profile/>}/>
           <Route path="/profile/:id" element={<Profile/>}/>
           <Route path="/discover" element={<Discover/>}/>
+          <Route path="/messages" element={<Messages/>}/>
           <Route path="*" element={<NotFound/>}/>
         </Routes>
       </main>
