@@ -24,7 +24,6 @@ const MASTERY_BADGE: Record<MasteryLevel, string> = {
   M7: "bg-red-700 text-red-100",
 };
 
-// ── Sub-components ─────────────────────────────────────────────────────────
 function RankShield({ tier, size = 80 }: { tier: string; size?: number }) {
   const cfg = RANK_CFG[tier] ?? RANK_CFG["Platino"];
   return (
@@ -49,7 +48,6 @@ function MasteryBadge({ level }: { level: MasteryLevel }) {
   );
 }
 
-// ── Main component ─────────────────────────────────────────────────────────
 export default function Profile() {
   const { id } = useParams<{ id?: string }>();
 
@@ -65,7 +63,6 @@ export default function Profile() {
       .then(res => res.json())
       .then((data: UserProfile[]) => {
         setProfiles(data);
-        // Si hay :id en la URL usarlo, si no el primero
         const initial = id ? data.find(p => p.id === id)?.id ?? data[0].id : data[0].id;
         setActiveId(initial);
         setLoading(false);
@@ -82,7 +79,6 @@ export default function Profile() {
     else setNotFound(true);
   }
 
-  // ── Loading state ──
   if (loading) {
     return (
       <div className="min-h-screen bg-[#0d1117] flex items-center justify-center">
@@ -109,14 +105,14 @@ export default function Profile() {
   return (
     <div className="min-h-screen bg-[#0d1117] text-slate-200">
 
-      <div className={`max-w-3xl mx-auto px-5 py-10 transition-all duration-500 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
+      <div className={`max-w-3xl mx-auto px-4 sm:px-5 py-6 sm:py-10 transition-all duration-500 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
 
         {/* Profile switcher */}
-        <div className="flex gap-2 mb-6 flex-wrap">
+        <div className="flex gap-2 mb-5 flex-wrap">
           {profiles.map(p => (
             <button key={p.id}
               onClick={() => { setActiveId(p.id); setNotFound(false); }}
-              className={`px-4 py-1.5 rounded-full text-xs font-semibold border transition-all ${
+              className={`px-3 sm:px-4 py-1.5 rounded-full text-xs font-semibold border transition-all ${
                 p.id === activeId
                   ? "bg-amber-400/10 border-amber-400 text-amber-400"
                   : "border-white/10 text-slate-500 hover:border-white/20 hover:text-slate-300"
@@ -129,14 +125,14 @@ export default function Profile() {
         {/* Search */}
         <div className="flex gap-2 mb-6">
           <input
-            className="flex-1 bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-slate-200 placeholder-slate-500 outline-none focus:border-amber-500/50 transition-colors"
+            className="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 text-sm text-slate-200 placeholder-slate-500 outline-none focus:border-amber-500/50 transition-colors"
             placeholder="Buscar invocador..."
             value={search}
             onChange={e => setSearch(e.target.value)}
             onKeyDown={e => e.key === "Enter" && handleSearch()}
           />
           <button onClick={handleSearch}
-            className="px-5 py-2.5 rounded-lg bg-amber-400/10 border border-amber-500/40 text-amber-400 text-sm font-bold hover:bg-amber-400/20 transition-colors">
+            className="px-4 sm:px-5 py-2 sm:py-2.5 rounded-lg bg-amber-400/10 border border-amber-500/40 text-amber-400 text-sm font-bold hover:bg-amber-400/20 transition-colors whitespace-nowrap">
             Buscar
           </button>
         </div>
@@ -145,11 +141,11 @@ export default function Profile() {
         )}
 
         {/* ── HEADER CARD ── */}
-        <div className="flex items-center gap-5 mb-5 p-6 rounded-2xl bg-white/[0.03] border border-white/[0.07] backdrop-blur-sm">
-          <div className={`relative ring-2 ${cfg.ring} rounded-full shadow-lg ${cfg.glow}`}>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-5 p-4 sm:p-6 rounded-2xl bg-white/[0.03] border border-white/[0.07] backdrop-blur-sm">
+          <div className={`relative ring-2 ${cfg.ring} rounded-full shadow-lg ${cfg.glow} shrink-0`}>
             <img
               src={profile.avatarUrl} alt="avatar"
-              className="w-20 h-20 rounded-full object-cover"
+              className="w-16 sm:w-20 h-16 sm:h-20 rounded-full object-cover"
               onError={e => { (e.target as HTMLImageElement).src = "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/profileicon/1.png"; }}
             />
             <span className="absolute -bottom-1 -right-1 bg-slate-800 border border-white/10 text-[10px] font-bold text-slate-300 px-1.5 rounded">
@@ -158,23 +154,23 @@ export default function Profile() {
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-[10px] tracking-[3px] text-slate-500 uppercase mb-0.5">Nombre de Invocador</p>
-            <h1 className="text-2xl font-black text-slate-100 tracking-tight truncate">{profile.summonerName}</h1>
+            <h1 className="text-xl sm:text-2xl font-black text-slate-100 tracking-tight truncate">{profile.summonerName}</h1>
             <p className="text-xs text-slate-500 mt-0.5">#{profile.tagLine}</p>
           </div>
-          <button className={`px-5 py-2 rounded-lg border ${cfg.ring} ${cfg.text} text-sm font-semibold bg-transparent hover:bg-white/5 transition-colors`}>
+          <button className={`w-full sm:w-auto px-4 sm:px-5 py-2 rounded-lg border ${cfg.ring} ${cfg.text} text-sm font-semibold bg-transparent hover:bg-white/5 transition-colors`}>
             Encontrar Perfil
           </button>
         </div>
 
         {/* ── RANK CARD ── */}
-        <div className={`flex items-center justify-between p-7 mb-5 rounded-2xl bg-gradient-to-br ${cfg.bg} border border-white/[0.06] shadow-xl ${cfg.glow}`}>
-          <div className="flex items-center gap-5">
+        <div className={`flex items-center justify-between p-5 sm:p-7 mb-5 rounded-2xl bg-gradient-to-br ${cfg.bg} border border-white/[0.06] shadow-xl ${cfg.glow}`}>
+          <div className="flex items-center gap-3 sm:gap-5">
             <div className={cfg.text}>
-              <RankShield tier={profile.rank.tier} size={90} />
+              <RankShield tier={profile.rank.tier} size={64} />
             </div>
             <div>
               <p className="text-[10px] tracking-[3px] text-slate-500 uppercase mb-1">Rango Actual</p>
-              <p className={`text-4xl font-black tracking-tight ${cfg.text}`}>
+              <p className={`text-2xl sm:text-4xl font-black tracking-tight ${cfg.text}`}>
                 {profile.rank.tier} {profile.rank.division}
               </p>
               <span className={`mt-2 inline-block text-xs font-semibold px-3 py-0.5 rounded-full bg-white/10 border border-white/10 ${cfg.text}`}>
@@ -182,26 +178,26 @@ export default function Profile() {
               </span>
             </div>
           </div>
-          <div className={`opacity-20 ${cfg.text}`}>
+          <div className={`opacity-20 ${cfg.text} hidden sm:block`}>
             <RankShield tier={profile.rank.tier} size={68} />
           </div>
         </div>
 
         {/* ── BOTTOM GRID ── */}
-        <div className="grid grid-cols-2 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
 
           {/* Champions */}
-          <div className="p-6 rounded-2xl bg-white/[0.03] border border-white/[0.07]">
+          <div className="p-4 sm:p-6 rounded-2xl bg-white/[0.03] border border-white/[0.07]">
             <p className="text-[10px] tracking-[3px] text-slate-500 uppercase mb-4">Campeones más jugados</p>
-            <div className="flex gap-4 justify-around">
+            <div className="flex gap-2 sm:gap-4 justify-around">
               {profile.topChampions.map(champ => (
                 <div key={champ.id} className="flex flex-col items-center gap-1.5">
                   <img
                     src={champ.iconUrl} alt={champ.name}
-                    className="w-14 h-14 rounded-full border-2 border-white/10 object-cover hover:border-amber-400/50 transition-colors"
+                    className="w-12 sm:w-14 h-12 sm:h-14 rounded-full border-2 border-white/10 object-cover hover:border-amber-400/50 transition-colors"
                     onError={e => { (e.target as HTMLImageElement).src = "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Lux.png"; }}
                   />
-                  <span className="text-xs font-semibold text-slate-300">{champ.name}</span>
+                  <span className="text-xs font-semibold text-slate-300 text-center">{champ.name}</span>
                   <MasteryBadge level={champ.mastery} />
                 </div>
               ))}
@@ -216,10 +212,10 @@ export default function Profile() {
           </div>
 
           {/* Win Rate + Play Style */}
-          <div className="p-6 rounded-2xl bg-white/[0.03] border border-white/[0.07] flex flex-col justify-between">
+          <div className="p-4 sm:p-6 rounded-2xl bg-white/[0.03] border border-white/[0.07] flex flex-col justify-between gap-4">
             <div>
               <p className="text-[10px] tracking-[3px] text-slate-500 uppercase mb-3">Estilo de Juego</p>
-              <div className="flex flex-wrap gap-1.5 mb-5">
+              <div className="flex flex-wrap gap-1.5 mb-4 sm:mb-5">
                 {profile.playStyles.map(s => (
                   <span key={s} className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-semibold text-amber-400">
                     {s}
@@ -237,7 +233,7 @@ export default function Profile() {
                   style={{ width: `${profile.winRate}%` }}
                 />
               </div>
-              <p className={`text-5xl font-black tracking-tight ${profile.winRate >= 50 ? "text-green-400" : "text-red-400"}`}>
+              <p className={`text-4xl sm:text-5xl font-black tracking-tight ${profile.winRate >= 50 ? "text-green-400" : "text-red-400"}`}>
                 {profile.winRate}%
               </p>
               <p className="text-xs text-slate-500 mt-0.5">Win Rate</p>

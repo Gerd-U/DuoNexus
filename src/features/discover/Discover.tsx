@@ -47,6 +47,7 @@ export default function Discover() {
   const [dragX, setDragX] = useState(0);
   const startX = useRef(0);
   const [matchProfile, setMatchProfile] = useState<DiscoverProfile | null>(null);
+  const [showPanel, setShowPanel] = useState(false);
 
   useEffect(() => {
     fetch("/discover.json")
@@ -73,6 +74,16 @@ export default function Discover() {
     if (!dragging) return; setDragging(false);
     if (dragX > 80) trigger("like");
     else if (dragX < -80) trigger("skip");
+    else setDragX(0);
+  }
+
+  // Touch support
+  function onTouchStart(e: React.TouchEvent) { startX.current = e.touches[0].clientX; setDragging(true); }
+  function onTouchMove(e: React.TouchEvent) { if (dragging) setDragX(e.touches[0].clientX - startX.current); }
+  function onTouchEnd() {
+    if (!dragging) return; setDragging(false);
+    if (dragX > 60) trigger("like");
+    else if (dragX < -60) trigger("skip");
     else setDragX(0);
   }
 
@@ -105,21 +116,25 @@ export default function Discover() {
   const cfg = profile ? (RANK_CFG[profile.rank.tier] ?? RANK_CFG["Platino"]) : null;
 
   if (!profile) return (
-    <div className="min-h-[calc(100vh-64px)] bg-[#07090d] flex flex-col items-center justify-center gap-5">
-      <div className="text-7xl animate-bounce">⚔️</div>
-      <p className="text-white font-black text-3xl">Sin más invocadores</p>
+    <div className="min-h-[calc(100vh-64px)] bg-[#07090d] flex flex-col items-center justify-center gap-5 px-4 text-center">
+      <div className="text-6xl sm:text-7xl animate-bounce">⚔️</div>
+      <p className="text-white font-black text-2xl sm:text-3xl">Sin más invocadores</p>
       <p className="text-slate-500 text-sm">Todos los perfiles han sido revisados</p>
       <button onClick={() => setIndex(0)}
-        className="mt-3 px-10 py-3 rounded-full bg-gradient-to-r from-yellow-600 to-amber-500 text-black font-black hover:scale-105 active:scale-95 transition-transform shadow-xl shadow-amber-900/40">
+        className="mt-3 px-8 sm:px-10 py-3 rounded-full bg-gradient-to-r from-yellow-600 to-amber-500 text-black font-black hover:scale-105 active:scale-95 transition-transform shadow-xl shadow-amber-900/40">
         Reiniciar
       </button>
     </div>
   );
 
+  // Responsive card dimensions
+  const cardW = typeof window !== "undefined" && window.innerWidth < 420 ? Math.min(window.innerWidth - 32, 340) : 380;
+  const cardH = Math.round(cardW * (560 / 380));
+
   return (
     <div className="min-h-[calc(100vh-64px)] bg-[#07090d] relative overflow-hidden flex flex-col">
 
-      {/* ── Fullscreen ambient background from splash ── */}
+      {/* Fullscreen ambient background */}
       <div className="absolute inset-0 z-0">
         <img src={profile.splashUrl} alt=""
           className="w-full h-full object-cover object-center opacity-10 scale-110 blur-xl"
@@ -128,19 +143,29 @@ export default function Discover() {
         <div className="absolute inset-0 bg-gradient-to-b from-[#07090d]/60 via-[#07090d]/40 to-[#07090d]" />
       </div>
 
-      {/* ── Rank color glow orb ── */}
+      {/* Rank color glow */}
       {cfg && (
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full blur-[140px] pointer-events-none z-0 transition-all duration-700"
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] sm:w-[600px] h-[400px] sm:h-[600px] rounded-full blur-[140px] pointer-events-none z-0 transition-all duration-700"
           style={{ background: cfg.glow }} />
       )}
 
-      {/* ── Main layout ── */}
-      <div className="relative z-10 flex flex-col lg:flex-row items-center justify-center gap-8 flex-1 px-6 py-6 max-w-6xl mx-auto w-full">
+      {/* Mobile: panel toggle button */}
+      <div className="relative z-10 lg:hidden flex justify-end px-4 pt-3">
+        <button
+          onClick={() => setShowPanel(v => !v)}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs text-white/50 hover:text-white/80 transition-colors"
+        >
+          <span>📊</span> {showPanel ? "Ocultar stats" : "Ver stats"}
+        </button>
+      </div>
 
-        {/* ─── LEFT: Card stack ─── */}
-        <div className="flex flex-col items-center gap-6">
+      {/* Main layout */}
+      <div className="relative z-10 flex flex-col lg:flex-row items-center justify-center gap-6 sm:gap-8 flex-1 px-4 sm:px-6 py-4 sm:py-6 max-w-6xl mx-auto w-full">
 
-          {/* Progress */}
+        {/* LEFT: Card stack */}
+        <div className="flex flex-col items-center gap-4 sm:gap-6 w-full lg:w-auto">
+
+          {/* Progress dots */}
           <div className="flex gap-2">
             {profiles.map((_, i) => (
               <div key={i} className={`rounded-full transition-all duration-300 ${
@@ -152,7 +177,7 @@ export default function Discover() {
           </div>
 
           {/* Card */}
-          <div className="relative select-none" style={{ width: 380, height: 560 }}>
+          <div className="relative select-none mx-auto" style={{ width: cardW, height: cardH }}>
 
             {/* Stack shadow cards */}
             {profiles[index + 2] && (
@@ -170,6 +195,7 @@ export default function Discover() {
             <div
               onMouseDown={onMouseDown} onMouseMove={onMouseMove}
               onMouseUp={onMouseUp} onMouseLeave={onMouseUp}
+              onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}
               className={`absolute inset-0 rounded-[28px] overflow-hidden z-[2] cursor-grab active:cursor-grabbing
                 border border-white/[0.12] shadow-[0_30px_80px_rgba(0,0,0,0.8)]
                 transition-all ${action ? "duration-400 ease-in" : dragging ? "duration-0" : "duration-200 ease-out"}
@@ -182,7 +208,6 @@ export default function Discover() {
                 style={{ objectPosition: profile.splashFocus ?? "center" }}
                 onError={e => { (e.target as HTMLImageElement).src = "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Lux_0.jpg"; }}
               />
-              {/* Gradient */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/30 to-transparent" />
               <div className="absolute inset-0 bg-gradient-to-br from-transparent to-black/40" />
 
@@ -197,48 +222,48 @@ export default function Discover() {
                 </div>
               </div>
 
-              {/* DUO / SKIP */}
+              {/* DUO / SKIP overlays */}
               <div className="absolute top-16 left-5 z-20 pointer-events-none"
                 style={{ opacity: likeOpacity, transform: `rotate(-12deg)` }}>
-                <div className="border-[3px] border-green-400 rounded-2xl px-5 py-1.5 bg-green-400/10 backdrop-blur-sm shadow-lg shadow-green-900/40">
-                  <span className="text-green-300 font-black text-3xl tracking-widest">DUO!</span>
+                <div className="border-[3px] border-green-400 rounded-2xl px-4 py-1.5 bg-green-400/10 backdrop-blur-sm shadow-lg shadow-green-900/40">
+                  <span className="text-green-300 font-black text-2xl sm:text-3xl tracking-widest">DUO!</span>
                 </div>
               </div>
               <div className="absolute top-16 right-5 z-20 pointer-events-none"
                 style={{ opacity: skipOpacity, transform: `rotate(12deg)` }}>
-                <div className="border-[3px] border-red-500 rounded-2xl px-5 py-1.5 bg-red-500/10 backdrop-blur-sm shadow-lg shadow-red-900/40">
-                  <span className="text-red-400 font-black text-3xl tracking-widest">SKIP</span>
+                <div className="border-[3px] border-red-500 rounded-2xl px-4 py-1.5 bg-red-500/10 backdrop-blur-sm shadow-lg shadow-red-900/40">
+                  <span className="text-red-400 font-black text-2xl sm:text-3xl tracking-widest">SKIP</span>
                 </div>
               </div>
 
               {/* Bottom info */}
-              <div className="absolute bottom-0 left-0 right-0 p-5 z-10">
-                <h2 className="text-[2rem] font-black text-white leading-none tracking-tight">{profile.summonerName}</h2>
+              <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-5 z-10">
+                <h2 className="text-2xl sm:text-[2rem] font-black text-white leading-none tracking-tight">{profile.summonerName}</h2>
                 <p className="text-slate-400 text-xs mt-0.5 mb-3">#{profile.tagLine}</p>
 
                 {/* 3 stat chips */}
-                <div className="grid grid-cols-3 gap-2 mb-3">
-                  <div className="rounded-xl p-2.5 border border-white/10 backdrop-blur-md"
+                <div className="grid grid-cols-3 gap-1.5 sm:gap-2 mb-3">
+                  <div className="rounded-xl p-2 sm:p-2.5 border border-white/10 backdrop-blur-md"
                     style={{ background: `linear-gradient(135deg, ${cfg?.from}cc, ${cfg?.to}ee)` }}>
                     <p className="text-[8px] text-white/40 uppercase tracking-widest mb-1">Rank</p>
                     <div className="flex items-center gap-1">
-                      <RankShield tier={profile.rank.tier} size={18} />
+                      <RankShield tier={profile.rank.tier} size={16} />
                       <div>
                         <p className={`font-black text-xs leading-none ${cfg?.text}`}>{profile.rank.tier}</p>
                         <p className={`text-[9px] ${cfg?.text} opacity-70`}>{profile.rank.division} · {profile.rank.lp}LP</p>
                       </div>
                     </div>
                   </div>
-                  <div className="rounded-xl p-2.5 bg-black/50 border border-white/10 backdrop-blur-md">
+                  <div className="rounded-xl p-2 sm:p-2.5 bg-black/50 border border-white/10 backdrop-blur-md">
                     <p className="text-[8px] text-white/40 uppercase tracking-widest mb-1">Rol</p>
                     <div className="flex items-center gap-1">
-                      <span className="text-base">{ROLE_ICON[profile.mainRole]}</span>
+                      <span className="text-sm sm:text-base">{ROLE_ICON[profile.mainRole]}</span>
                       <p className={`font-black text-xs ${ROLE_COLOR[profile.mainRole] ?? "text-white"}`}>{profile.mainRole}</p>
                     </div>
                   </div>
-                  <div className="rounded-xl p-2.5 bg-black/50 border border-white/10 backdrop-blur-md">
+                  <div className="rounded-xl p-2 sm:p-2.5 bg-black/50 border border-white/10 backdrop-blur-md">
                     <p className="text-[8px] text-white/40 uppercase tracking-widest mb-1">Win Rate</p>
-                    <p className={`font-black text-lg leading-none ${profile.winRate >= 50 ? "text-green-400" : "text-red-400"}`}>{profile.winRate}%</p>
+                    <p className={`font-black text-base sm:text-lg leading-none ${profile.winRate >= 50 ? "text-green-400" : "text-red-400"}`}>{profile.winRate}%</p>
                     <div className="mt-1 h-0.5 rounded-full bg-white/10">
                       <div className={`h-full rounded-full ${profile.winRate >= 50 ? "bg-green-400" : "bg-red-400"}`} style={{ width: `${profile.winRate}%` }} />
                     </div>
@@ -248,7 +273,7 @@ export default function Discover() {
                 {/* Play styles */}
                 <div className="flex gap-1.5 mb-3 flex-wrap">
                   {profile.playStyles.map(s => (
-                    <span key={s} className="px-2.5 py-0.5 rounded-full bg-yellow-400/10 border border-yellow-400/20 text-[10px] font-bold text-yellow-300 tracking-wide">
+                    <span key={s} className="px-2 sm:px-2.5 py-0.5 rounded-full bg-yellow-400/10 border border-yellow-400/20 text-[10px] font-bold text-yellow-300 tracking-wide">
                       {s}
                     </span>
                   ))}
@@ -259,7 +284,7 @@ export default function Discover() {
                   <div className="flex -space-x-3">
                     {profile.topChampions.map((c, i) => (
                       <img key={c.id} src={c.iconUrl} alt={c.name}
-                        className="w-10 h-10 rounded-full border-2 border-black object-cover shadow-lg"
+                        className="w-8 sm:w-10 h-8 sm:h-10 rounded-full border-2 border-black object-cover shadow-lg"
                         style={{ zIndex: 3 - i }}
                         onError={e => { (e.target as HTMLImageElement).src = "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Lux.png"; }}
                       />
@@ -274,14 +299,14 @@ export default function Discover() {
             </div>
           </div>
 
-          {/* Buttons */}
-          <div className="flex items-center gap-14">
+          {/* Action buttons */}
+          <div className="flex items-center gap-10 sm:gap-14">
             <div className="flex flex-col items-center gap-1.5">
               <button onClick={() => trigger("skip")}
-                className="w-16 h-16 rounded-full border-2 border-red-500/60 bg-red-950/40 flex items-center justify-center
+                className="w-14 sm:w-16 h-14 sm:h-16 rounded-full border-2 border-red-500/60 bg-red-950/40 flex items-center justify-center
                   hover:bg-red-500/20 hover:border-red-400 hover:scale-110 active:scale-95 transition-all
-                  shadow-xl shadow-red-950/40 backdrop-blur-sm group">
-                <svg className="w-7 h-7 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                  shadow-xl shadow-red-950/40 backdrop-blur-sm">
+                <svg className="w-6 sm:w-7 h-6 sm:h-7 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
@@ -290,10 +315,10 @@ export default function Discover() {
             <span className="text-white/15 text-sm font-mono">{index + 1}/{profiles.length}</span>
             <div className="flex flex-col items-center gap-1.5">
               <button onClick={() => trigger("like")}
-                className="w-16 h-16 rounded-full border-2 border-green-500/60 bg-green-950/40 flex items-center justify-center
+                className="w-14 sm:w-16 h-14 sm:h-16 rounded-full border-2 border-green-500/60 bg-green-950/40 flex items-center justify-center
                   hover:bg-green-500/20 hover:border-green-400 hover:scale-110 active:scale-95 transition-all
-                  shadow-xl shadow-green-950/40 backdrop-blur-sm group">
-                <svg className="w-7 h-7 text-green-400" fill="currentColor" viewBox="0 0 24 24">
+                  shadow-xl shadow-green-950/40 backdrop-blur-sm">
+                <svg className="w-6 sm:w-7 h-6 sm:h-7 text-green-400" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
                 </svg>
               </button>
@@ -302,21 +327,21 @@ export default function Discover() {
           </div>
         </div>
 
-        {/* ─── RIGHT: Profile detail panel ─── */}
-        <div className="hidden lg:flex flex-col gap-4 w-72">
+        {/* RIGHT: Profile detail panel — desktop always visible, mobile toggleable */}
+        <div className={`${showPanel ? 'flex' : 'hidden'} lg:flex flex-col gap-4 w-full sm:w-80 lg:w-72`}>
 
           {/* Avatar + name */}
-          <div className="rounded-2xl bg-white/[0.04] border border-white/10 p-5 backdrop-blur-sm flex items-center gap-4">
-            <div className="relative">
+          <div className="rounded-2xl bg-white/[0.04] border border-white/10 p-4 sm:p-5 backdrop-blur-sm flex items-center gap-4">
+            <div className="relative shrink-0">
               <img src={profile.avatarUrl} alt={profile.summonerName}
-                className={`w-16 h-16 rounded-2xl object-cover border-2`}
+                className="w-14 sm:w-16 h-14 sm:h-16 rounded-2xl object-cover border-2"
                 style={{ borderColor: cfg?.from ?? "#888" }}
                 onError={e => { (e.target as HTMLImageElement).src = "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/profileicon/1.png"; }}
               />
               <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-green-400 border-2 border-[#07090d]" />
             </div>
             <div>
-              <p className="font-black text-white text-lg leading-tight">{profile.summonerName}</p>
+              <p className="font-black text-white text-base sm:text-lg leading-tight">{profile.summonerName}</p>
               <p className="text-slate-500 text-xs">#{profile.tagLine} · {profile.region}</p>
               <div className="flex items-center gap-1.5 mt-1.5">
                 <RankShield tier={profile.rank.tier} size={14} />
@@ -326,7 +351,7 @@ export default function Discover() {
           </div>
 
           {/* Stats */}
-          <div className="rounded-2xl bg-white/[0.04] border border-white/10 p-5 backdrop-blur-sm">
+          <div className="rounded-2xl bg-white/[0.04] border border-white/10 p-4 sm:p-5 backdrop-blur-sm">
             <p className="text-[10px] text-white/30 uppercase tracking-[3px] mb-4">Estadísticas</p>
             <div className="space-y-4">
               <div>
@@ -359,7 +384,7 @@ export default function Discover() {
           </div>
 
           {/* Play style */}
-          <div className="rounded-2xl bg-white/[0.04] border border-white/10 p-5 backdrop-blur-sm">
+          <div className="rounded-2xl bg-white/[0.04] border border-white/10 p-4 sm:p-5 backdrop-blur-sm">
             <p className="text-[10px] text-white/30 uppercase tracking-[3px] mb-3">Estilo de juego</p>
             <div className="flex flex-wrap gap-2 mb-4">
               {profile.playStyles.map(s => (
@@ -374,7 +399,7 @@ export default function Discover() {
           </div>
 
           {/* Champions */}
-          <div className="rounded-2xl bg-white/[0.04] border border-white/10 p-5 backdrop-blur-sm">
+          <div className="rounded-2xl bg-white/[0.04] border border-white/10 p-4 sm:p-5 backdrop-blur-sm">
             <p className="text-[10px] text-white/30 uppercase tracking-[3px] mb-3">Top campeones</p>
             <div className="space-y-2.5">
               {profile.topChampions.map((champ, i) => (
@@ -394,9 +419,9 @@ export default function Discover() {
               ))}
             </div>
           </div>
-
         </div>
       </div>
+
       {/* Match Modal */}
       {matchProfile !== null && (
         <MatchModal

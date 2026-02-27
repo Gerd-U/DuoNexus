@@ -3,7 +3,6 @@ import type { ChatContact, ChatMessage } from '../../models/messages.models';
 import { messageService } from '../../service/messages.service';
 
 
-/* ─── tiny rank-icon SVG ─── */
 function RankBadge() {
   return (
     <svg className="w-4 h-4 text-yellow-500" viewBox="0 0 24 24" fill="currentColor">
@@ -12,7 +11,6 @@ function RankBadge() {
   );
 }
 
-/* ─── online dot ─── */
 function OnlineDot({ online }: { online: boolean }) {
   return (
     <span
@@ -23,20 +21,11 @@ function OnlineDot({ online }: { online: boolean }) {
   );
 }
 
-/* ─── avatar circle ─── */
-function Avatar({
-  contact,
-  size = 'md',
-}: {
-  contact: ChatContact;
-  size?: 'sm' | 'md' | 'lg';
-}) {
+function Avatar({ contact, size = 'md' }: { contact: ChatContact; size?: 'sm' | 'md' | 'lg' }) {
   const sizes = { sm: 'w-10 h-10 text-base', md: 'w-12 h-12 text-lg', lg: 'w-14 h-14 text-2xl' };
   return (
     <div className="relative shrink-0">
-      <div
-        className={`${sizes[size]} rounded-full bg-gradient-to-br ${contact.avatarGradient} flex items-center justify-center font-bold text-white shadow-lg`}
-      >
+      <div className={`${sizes[size]} rounded-full bg-gradient-to-br ${contact.avatarGradient} flex items-center justify-center font-bold text-white shadow-lg`}>
         {contact.championEmoji}
       </div>
       <OnlineDot online={contact.isOnline} />
@@ -44,7 +33,6 @@ function Avatar({
   );
 }
 
-/* ─── single message bubble ─── */
 function MessageBubble({ msg, contactName }: { msg: ChatMessage; contactName: string }) {
   const isUser = msg.sender === 'user';
 
@@ -61,13 +49,11 @@ function MessageBubble({ msg, contactName }: { msg: ChatMessage; contactName: st
 
   return (
     <div className={`flex ${isUser ? 'justify-end' : 'justify-start'}`}>
-      <div
-        className={`max-w-sm px-4 py-2.5 rounded-2xl shadow-lg ${
-          isUser
-            ? 'bg-gradient-to-br from-zinc-700 to-zinc-800 border border-zinc-600/50 rounded-br-sm'
-            : 'bg-gradient-to-br from-purple-900/80 to-indigo-900/80 border border-purple-700/50 rounded-bl-sm'
-        }`}
-      >
+      <div className={`max-w-[80%] sm:max-w-sm px-4 py-2.5 rounded-2xl shadow-lg ${
+        isUser
+          ? 'bg-gradient-to-br from-zinc-700 to-zinc-800 border border-zinc-600/50 rounded-br-sm'
+          : 'bg-gradient-to-br from-purple-900/80 to-indigo-900/80 border border-purple-700/50 rounded-bl-sm'
+      }`}>
         {!isUser && (
           <span className="text-xs font-bold text-purple-300 block mb-0.5">{contactName}:</span>
         )}
@@ -80,16 +66,7 @@ function MessageBubble({ msg, contactName }: { msg: ChatMessage; contactName: st
   );
 }
 
-/* ─── contact list item ─── */
-function ContactItem({
-  contact,
-  isActive,
-  onClick,
-}: {
-  contact: ChatContact;
-  isActive: boolean;
-  onClick: () => void;
-}) {
+function ContactItem({ contact, isActive, onClick }: { contact: ChatContact; isActive: boolean; onClick: () => void }) {
   return (
     <button
       onClick={onClick}
@@ -100,33 +77,25 @@ function ContactItem({
       }`}
     >
       <Avatar contact={contact} size="sm" />
-
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between gap-2">
-          <span
-            className={`text-sm font-bold truncate ${
-              isActive ? 'text-yellow-400' : 'text-zinc-200 group-hover:text-white'
-            }`}
-          >
+          <span className={`text-sm font-bold truncate ${isActive ? 'text-yellow-400' : 'text-zinc-200 group-hover:text-white'}`}>
             {contact.summonerName}
           </span>
           <span className="text-[10px] text-zinc-600 shrink-0">{contact.lastTime}</span>
         </div>
-
         <div className="flex items-center gap-1 mt-0.5">
           <RankBadge />
           <span className="text-[10px] text-yellow-600 font-medium">{contact.rank}</span>
           <span className="text-[10px] text-zinc-600">•</span>
           <span className="text-[10px] text-zinc-500">{contact.role}</span>
         </div>
-
         <p className="text-xs text-zinc-500 truncate mt-0.5">{contact.lastMessage}</p>
       </div>
     </button>
   );
 }
 
-/* ─── empty state ─── */
 function EmptyState() {
   return (
     <div className="flex-1 flex flex-col items-center justify-center gap-4 text-center p-8">
@@ -144,14 +113,14 @@ function EmptyState() {
   );
 }
 
-/* ─── Main Messages page ─── */
 export function Messages() {
   const contacts = messageService.getAllChats();
 
-  const [activeId, setActiveId] = useState<string | null>(contacts[0]?.id ?? null);
+  const [activeId, setActiveId] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const [inputValue, setInputValue] = useState('');
   const [filterOnline, setFilterOnline] = useState(false);
+  const [showChat, setShowChat] = useState(false); // mobile: toggle between list and chat
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const activeChat: ChatContact | undefined = contacts.find((c) => c.id === activeId);
@@ -162,7 +131,6 @@ export function Messages() {
     return matchSearch && matchOnline;
   });
 
-  /* scroll to bottom on chat change */
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [activeId]);
@@ -170,26 +138,30 @@ export function Messages() {
   function handleSend() {
     if (!inputValue.trim()) return;
     setInputValue('');
-    // In a real app this would call a mutation; for demo we just clear
   }
 
   function handleKey(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === 'Enter') handleSend();
   }
 
+  function selectContact(id: string) {
+    setActiveId(id);
+    setShowChat(true); // on mobile, show the chat panel
+  }
+
   return (
     <div className="min-h-[calc(100vh-4rem)] bg-zinc-950">
-      {/* page wrapper */}
-      <div className="max-w-7xl mx-auto px-4 py-6">
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 py-3 sm:py-6">
         <div
-          className="flex rounded-2xl overflow-hidden border border-zinc-800/80 shadow-2xl"
-          style={{ minHeight: 'calc(100vh - 9rem)' }}
+          className="flex rounded-xl sm:rounded-2xl overflow-hidden border border-zinc-800/80 shadow-2xl"
+          style={{ minHeight: 'calc(100vh - 7rem)' }}
         >
-          {/* ── LEFT PANEL – contact list ── */}
-          <aside className="w-72 shrink-0 bg-zinc-900/90 flex flex-col border-r border-zinc-800">
+          {/* LEFT PANEL – contact list */}
+          {/* On mobile: show only if !showChat; on desktop: always show */}
+          <aside className={`${showChat ? 'hidden' : 'flex'} md:flex w-full md:w-64 lg:w-72 shrink-0 bg-zinc-900/90 flex-col border-r border-zinc-800`}>
             {/* header */}
-            <div className="px-4 pt-5 pb-3 border-b border-zinc-800">
-              <h2 className="text-white font-bold text-lg tracking-wide mb-3">
+            <div className="px-3 sm:px-4 pt-4 sm:pt-5 pb-3 border-b border-zinc-800">
+              <h2 className="text-white font-bold text-base sm:text-lg tracking-wide mb-3">
                 Duo<span className="text-yellow-500">Chats</span>
               </h2>
 
@@ -208,14 +180,14 @@ export function Messages() {
               </div>
 
               {/* filters */}
-              <div className="flex items-center gap-2 mt-2.5">
-                <button className="flex items-center gap-1 px-2.5 py-1 rounded-md bg-zinc-800 border border-zinc-700 text-zinc-400 text-xs hover:border-yellow-600/50 hover:text-yellow-500 transition-colors">
+              <div className="flex items-center gap-1.5 sm:gap-2 mt-2.5 flex-wrap">
+                <button className="flex items-center gap-1 px-2 sm:px-2.5 py-1 rounded-md bg-zinc-800 border border-zinc-700 text-zinc-400 text-xs hover:border-yellow-600/50 hover:text-yellow-500 transition-colors">
                   <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L13 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 017 21v-7.586L3.293 6.707A1 1 0 013 6V4z" />
                   </svg>
                   By Role
                 </button>
-                <button className="flex items-center gap-1 px-2.5 py-1 rounded-md bg-zinc-800 border border-zinc-700 text-zinc-400 text-xs hover:border-yellow-600/50 hover:text-yellow-500 transition-colors">
+                <button className="flex items-center gap-1 px-2 sm:px-2.5 py-1 rounded-md bg-zinc-800 border border-zinc-700 text-zinc-400 text-xs hover:border-yellow-600/50 hover:text-yellow-500 transition-colors">
                   <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L13 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 017 21v-7.586L3.293 6.707A1 1 0 013 6V4z" />
                   </svg>
@@ -223,7 +195,7 @@ export function Messages() {
                 </button>
                 <button
                   onClick={() => setFilterOnline((v) => !v)}
-                  className={`flex items-center gap-1 px-2.5 py-1 rounded-md border text-xs transition-colors ${
+                  className={`flex items-center gap-1 px-2 sm:px-2.5 py-1 rounded-md border text-xs transition-colors ${
                     filterOnline
                       ? 'bg-green-900/40 border-green-600/60 text-green-400'
                       : 'bg-zinc-800 border-zinc-700 text-zinc-400 hover:border-green-600/50 hover:text-green-500'
@@ -236,7 +208,7 @@ export function Messages() {
             </div>
 
             {/* list */}
-            <div className="flex-1 overflow-y-auto px-2 py-2 space-y-1 scrollbar-thin scrollbar-thumb-zinc-700 scrollbar-track-transparent">
+            <div className="flex-1 overflow-y-auto px-2 py-2 space-y-1">
               {filtered.length === 0 ? (
                 <p className="text-center text-zinc-600 text-xs py-8">Sin resultados</p>
               ) : (
@@ -245,16 +217,17 @@ export function Messages() {
                     key={c.id}
                     contact={c}
                     isActive={c.id === activeId}
-                    onClick={() => setActiveId(c.id)}
+                    onClick={() => selectContact(c.id)}
                   />
                 ))
               )}
             </div>
           </aside>
 
-          {/* ── RIGHT PANEL – chat area ── */}
-          <main className="flex-1 flex flex-col bg-zinc-950/95 relative">
-            {/* decorative background pattern */}
+          {/* RIGHT PANEL – chat area */}
+          {/* On mobile: show only if showChat; on desktop: always show */}
+          <main className={`${showChat ? 'flex' : 'hidden'} md:flex flex-1 flex-col bg-zinc-950/95 relative min-w-0`}>
+            {/* decorative background */}
             <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
               style={{
                 backgroundImage: 'repeating-linear-gradient(45deg, #a16207 0, #a16207 1px, transparent 0, transparent 50%)',
@@ -265,16 +238,23 @@ export function Messages() {
             {activeChat ? (
               <>
                 {/* chat header */}
-                <div className="relative z-10 flex items-center justify-between px-5 py-3.5 border-b border-zinc-800/80 bg-zinc-900/60 backdrop-blur-sm">
-                  <div className="flex items-center gap-3">
+                <div className="relative z-10 flex items-center justify-between px-3 sm:px-5 py-3 sm:py-3.5 border-b border-zinc-800/80 bg-zinc-900/60 backdrop-blur-sm gap-2">
+                  <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+                    {/* Mobile: back button */}
+                    <button
+                      className="md:hidden shrink-0 p-1 text-zinc-400 hover:text-white transition-colors"
+                      onClick={() => setShowChat(false)}
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                      </svg>
+                    </button>
                     <Avatar contact={activeChat} size="lg" />
-                    <div>
-                      <p className="text-xs text-zinc-500 font-medium uppercase tracking-wider">
-                        Chat con
-                      </p>
-                      <h3 className="text-white font-bold text-base leading-tight">
+                    <div className="min-w-0">
+                      <p className="text-xs text-zinc-500 font-medium uppercase tracking-wider hidden sm:block">Chat con</p>
+                      <h3 className="text-white font-bold text-sm sm:text-base leading-tight truncate">
                         {activeChat.summonerName}
-                        <span className="text-zinc-400 font-normal text-sm ml-2">
+                        <span className="text-zinc-400 font-normal text-xs sm:text-sm ml-1 hidden sm:inline">
                           ({activeChat.rank}, {activeChat.role})
                         </span>
                       </h3>
@@ -289,21 +269,22 @@ export function Messages() {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2">
-                    <button className="px-3.5 py-1.5 text-xs font-semibold text-zinc-300 border border-zinc-700 rounded-lg hover:border-yellow-600/60 hover:text-yellow-400 transition-colors">
+                  <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+                    <button className="hidden sm:block px-3 sm:px-3.5 py-1.5 text-xs font-semibold text-zinc-300 border border-zinc-700 rounded-lg hover:border-yellow-600/60 hover:text-yellow-400 transition-colors">
                       Ver Perfil
                     </button>
                     <button
                       onClick={() => navigator.clipboard.writeText(activeChat.summonerName)}
-                      className="px-3.5 py-1.5 text-xs font-semibold text-zinc-300 border border-zinc-700 rounded-lg hover:border-yellow-600/60 hover:text-yellow-400 transition-colors"
+                      className="px-2.5 sm:px-3.5 py-1.5 text-xs font-semibold text-zinc-300 border border-zinc-700 rounded-lg hover:border-yellow-600/60 hover:text-yellow-400 transition-colors"
                     >
-                      Copiar Nick
+                      <span className="hidden sm:inline">Copiar Nick</span>
+                      <span className="sm:hidden">⎘</span>
                     </button>
                   </div>
                 </div>
 
                 {/* messages scroll area */}
-                <div className="relative z-10 flex-1 overflow-y-auto px-6 py-5 space-y-3 scrollbar-thin scrollbar-thumb-zinc-700 scrollbar-track-transparent">
+                <div className="relative z-10 flex-1 overflow-y-auto px-3 sm:px-6 py-4 sm:py-5 space-y-3">
                   {activeChat.messages.map((msg) => (
                     <MessageBubble
                       key={msg.id}
@@ -315,9 +296,9 @@ export function Messages() {
                 </div>
 
                 {/* input bar */}
-                <div className="relative z-10 px-5 py-3.5 border-t border-zinc-800/80 bg-zinc-900/60 backdrop-blur-sm">
-                  <div className="flex items-center gap-2.5">
-                    <div className="flex-1 flex items-center gap-2 bg-zinc-800/80 border border-zinc-700/60 rounded-xl px-4 py-2.5 focus-within:border-yellow-600/50 transition-colors">
+                <div className="relative z-10 px-3 sm:px-5 py-3 sm:py-3.5 border-t border-zinc-800/80 bg-zinc-900/60 backdrop-blur-sm">
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1 flex items-center gap-2 bg-zinc-800/80 border border-zinc-700/60 rounded-xl px-3 sm:px-4 py-2 sm:py-2.5 focus-within:border-yellow-600/50 transition-colors">
                       <input
                         type="text"
                         placeholder="Escribe un mensaje..."
@@ -326,12 +307,7 @@ export function Messages() {
                         onKeyDown={handleKey}
                         className="flex-1 bg-transparent text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none"
                       />
-                      <button className="text-zinc-600 hover:text-yellow-500 transition-colors">
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
-                        </svg>
-                      </button>
-                      <button className="text-zinc-600 hover:text-yellow-500 transition-colors">
+                      <button className="hidden sm:block text-zinc-600 hover:text-yellow-500 transition-colors">
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
@@ -340,7 +316,7 @@ export function Messages() {
 
                     <button
                       onClick={handleSend}
-                      className="px-5 py-2.5 bg-gradient-to-r from-yellow-600 to-yellow-500 hover:from-yellow-500 hover:to-yellow-400 text-black font-bold text-sm rounded-xl shadow-lg shadow-yellow-900/30 transition-all hover:scale-105 active:scale-95"
+                      className="px-4 sm:px-5 py-2 sm:py-2.5 bg-gradient-to-r from-yellow-600 to-yellow-500 hover:from-yellow-500 hover:to-yellow-400 text-black font-bold text-sm rounded-xl shadow-lg shadow-yellow-900/30 transition-all hover:scale-105 active:scale-95 whitespace-nowrap"
                     >
                       Enviar
                     </button>
